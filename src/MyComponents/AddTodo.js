@@ -9,7 +9,11 @@ export const AddTodo  = (addTodo) => {
     if(!title ||!desc ){
       alert("title or description cannot be empty")
     }
+    else{
         addTodo(title,desc);
+        setTitle("");
+        setDesc("");
+    }
   }
   return (
     <div className="container my-3">

@@ -4,9 +4,25 @@ import Header from "./MyComponents/Header";
 import {Todos} from "./MyComponents/Todos";
 import {Footer} from "./MyComponents/Footer";
 import {AddTodo} from "./MyComponents/AddTodo";
-import React, { useState } from 'react';
+import { About } from "./MyComponents/About";
+import React, { useState,useEffect } from 'react';
+import{
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+  
+}from "react-router-dom";
 
 function App() {
+   let initTodo;
+   if (localStorage.getItem("todos")===null){
+initTodo=[];
+   }
+   else{
+    initTodo =JSON.parse(localStorage.getItem("todos"));
+   }
+  
   const onDelete = (todo)=>{
   console.log("i am onDelete of todo",todo);
   // Deleting this way in react doesnt Work.
@@ -15,12 +31,8 @@ function App() {
 
   setTodos(todos.filter((e)=>{
     return e!==todo;
-
-
-  
-
-  
-  }));
+}));
+localStorage.setItem("todos",JSON.stringify(todos));
   }
   const addTodo = (title,desc)=>{
     console.log("i am adding this todo",title,desc)
@@ -40,35 +52,46 @@ function App() {
       desc:desc,
   }
   setTodos([...todos,myTodo]);
-  console.log("myTodo")
-  }
-const [todos ,setTodos] = useState([
-  
+  console.log("myTodo");
 
- 
-    {
-      sno:1,
-      title: "Go to the hospital",
-      desc: "you need to go hospital to buy cetamol"
-    },
-    {
-      sno:2,
-      title: "do exercise of hands",
-      desc: "you need to execrise now"
-    },
-    {
-      sno:3,
-      title: "Go to the walk",
-      desc: "evening walk is good for health so just do it"
-    },
-  ]);
+  
+  }
+
+
+const [todos ,setTodos] = useState([initTodo]);
+useEffect(() => {
+  localStorage.setItem("todos",JSON.stringify(todos));
+
+  
+}, [todos])
+
 
   return (
     <>
-    <Header title="My Todos List" searchBar={false}/>
-    <AddTodo addTodo={addTodo}/>
+    <Router>
+  <Header title="My Todos List" searchBar={false}/>
+    <switch>
+    <Route path="/" render={()=>{
+      return(
+      <>
+       <AddTodo addTodo={addTodo}/>
     <Todos todos={todos} onDelete={onDelete}/>
+
+      </>)
+
+    }}>
+       </Route>
+
+      <Route path="/about">
+        <About/>
+      </Route>
+      
+      
+    </switch>
+
+   
     <Footer/>
+    </Router>
    
     </>
    
